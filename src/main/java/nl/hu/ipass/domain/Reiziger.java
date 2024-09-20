@@ -1,83 +1,98 @@
-package nl.hu.ipass.domain;
+    package nl.hu.ipass.domain;
 
-import java.sql.Date;
+    import java.sql.Date;
 
+    import jakarta.persistence.*;
 
-public class Reiziger {
-    private int id;
-    private String voorletters;
-    private String tussenvoegsel;
-    private String achternaam;
-    private Date geboortedatum;
+    @Entity
+    @Table(name = "reiziger")
+    public class Reiziger {
+        @Id
+        //@GeneratedValue
+        @Column(name = "reiziger_id")
+        private int id;
 
-    public Reiziger() {
-    }
+        @Column(name = "voorletters")
+        private String voorletters;
 
-    public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
-        this.id = id;
-        this.voorletters = voorletters;
-        this.tussenvoegsel = tussenvoegsel;
-        this.achternaam = achternaam;
-        this.geboortedatum = geboortedatum;
-    }
+        @Column(name = "tussenvoegsel")
+        private String tussenvoegsel;
 
-    public int getId() {
-        return id;
-    }
+        @Column(name = "achternaam")
+        private String achternaam;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+        @Column(name = "geboortedatum")
+        private Date geboortedatum;
 
-    public String getVoorletters() {
-        return voorletters;
-    }
+        // Constructors, getters en setters
 
-    public void setVoorletters(String voorletters) {
-        this.voorletters = voorletters;
-    }
+        public Reiziger() {}
 
-    public String getTussenvoegsel() {
-        return tussenvoegsel;
-    }
+        public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
+            this.id = id;
+            this.voorletters = voorletters;
+            this.tussenvoegsel = tussenvoegsel;
+            this.achternaam = achternaam;
+            this.geboortedatum = geboortedatum;
+        }
 
-    public void setTussenvoegsel(String tussenvoegsel) {
-        this.tussenvoegsel = tussenvoegsel;
-    }
+        public int getId() {
+            return id;
+        }
 
-    public String getAchternaam() {
-        return achternaam;
-    }
+        public void setId(int id) {
+            this.id = id;
+        }
 
-    public void setAchternaam(String achternaam) {
-        this.achternaam = achternaam;
-    }
+        public String getVoorletters() {
+            return voorletters;
+        }
 
-    public Date getGeboortedatum() {
-        return geboortedatum;
-    }
+        public void setVoorletters(String voorletters) {
+            this.voorletters = voorletters;
+        }
 
-    public void setGeboortedatum(Date geboortedatum) {
-        this.geboortedatum = geboortedatum;
-    }
+        public String getTussenvoegsel() {
+            return tussenvoegsel;
+        }
 
-    public String getNaam() {
-        if (tussenvoegsel == null || tussenvoegsel.isEmpty()) {
-            return voorletters + " " + achternaam;
-        } else {
-            return voorletters + " " + tussenvoegsel + " " + achternaam;
+        public void setTussenvoegsel(String tussenvoegsel) {
+            this.tussenvoegsel = tussenvoegsel;
+        }
+
+        public String getAchternaam() {
+            return achternaam;
+        }
+
+        public void setAchternaam(String achternaam) {
+            this.achternaam = achternaam;
+        }
+
+        public Date getGeboortedatum() {
+            return geboortedatum;
+        }
+
+        public void setGeboortedatum(Date geboortedatum) {
+            this.geboortedatum = geboortedatum;
+        }
+
+        public String getNaam() {
+            if (tussenvoegsel == null || tussenvoegsel.isEmpty()) {
+                return voorletters + " " + achternaam;
+            } else {
+                return voorletters + " " + tussenvoegsel + " " + achternaam;
+            }
+        }
+
+        // toString-methode om de Reiziger als String weer te geven
+        @Override
+        public String toString() {
+            return "Reiziger{" +
+                    "id=" + id +
+                    ", voorletters='" + voorletters + '\'' +
+                    ", tussenvoegsel='" + tussenvoegsel + '\'' +
+                    ", achternaam='" + achternaam + '\'' +
+                    ", geboortedatum=" + geboortedatum +
+                    '}';
         }
     }
-
-    // toString-methode om de Reiziger als String weer te geven
-    @Override
-    public String toString() {
-        return "Reiziger{" +
-                "id=" + id +
-                ", voorletters='" + voorletters + '\'' +
-                ", tussenvoegsel='" + tussenvoegsel + '\'' +
-                ", achternaam='" + achternaam + '\'' +
-                ", geboortedatum=" + geboortedatum +
-                '}';
-    }
-}

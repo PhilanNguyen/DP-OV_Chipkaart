@@ -22,7 +22,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
         pstmt.setInt(1, reiziger.getId());
         pstmt.setString(2, reiziger.getVoorletters());
-        pstmt.setString(3, reiziger.getTussenvoegsel());
+        if (reiziger.getTussenvoegsel().isEmpty()){
+            String tussenvoegsel = null;
+            pstmt.setString(3,tussenvoegsel);
+        } else{
+            pstmt.setString(3, reiziger.getTussenvoegsel());
+        }
         pstmt.setString(4, reiziger.getAchternaam());
         pstmt.setDate(5, reiziger.getGeboortedatum());
         int rijenInserted = pstmt.executeUpdate();

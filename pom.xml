@@ -14,4 +14,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- Hibernate dependencies -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.5.2.Final</version> <!-- Zorg ervoor dat je een recente versie gebruikt -->
+        </dependency>
+
+        <!-- PostgreSQL dependency -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version> <!-- Zorg ervoor dat je de juiste versie gebruikt -->
+        </dependency>
+
+    </dependencies>
+
 </project>
