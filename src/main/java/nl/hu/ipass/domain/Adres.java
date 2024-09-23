@@ -1,11 +1,23 @@
 package nl.hu.ipass.domain;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "adres")
 public class Adres {
+    @Id
+    @Column(name = "adres_id")
     private int id;
+    @Column(name = "postcode")
     private String postcode;
+    @Column(name = "huisnummer")
     private String huisnummer;
+    @Column(name = "straat")
     private String straat;
+    @Column(name = "woonplaats")
     private String woonplaats;
+    @Column(name = "reiziger_id")
     private int reizigerId;
     public Adres(){
 

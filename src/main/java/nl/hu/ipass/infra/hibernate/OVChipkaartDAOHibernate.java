@@ -1,30 +1,27 @@
 package nl.hu.ipass.infra.hibernate;
 
-import nl.hu.ipass.domain.Adres;
-import nl.hu.ipass.domain.AdresDAO;
-import nl.hu.ipass.domain.Reiziger;
-import nl.hu.ipass.domain.ReizigerDAO;
+import nl.hu.ipass.domain.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import java.sql.Date;
 import java.util.List;
 
-public class AdresDAOHibernate implements AdresDAO {
+public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
+
     private SessionFactory sessionFactory;
-    public AdresDAOHibernate() {
+    public OVChipkaartDAOHibernate() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Override
-    public boolean save(Adres adres) {
+    public boolean save(OVChipkaart ovChipkaart) {
         Session session = sessionFactory.openSession();
         try{
             session.beginTransaction();
-            session.persist(adres);
+            session.persist(ovChipkaart);
             session.getTransaction().commit();
             return true;
 
@@ -35,11 +32,11 @@ public class AdresDAOHibernate implements AdresDAO {
     }
 
     @Override
-    public boolean update(Adres adres) {
+    public boolean update(OVChipkaart ovChipkaart) {
         Session session = sessionFactory.openSession();
         try{
             session.beginTransaction();
-            session.update(adres);
+            session.update(ovChipkaart);
             session.getTransaction().commit();
             return true;
 
@@ -50,11 +47,11 @@ public class AdresDAOHibernate implements AdresDAO {
     }
 
     @Override
-    public boolean delete(Adres adres) {
+    public boolean delete(OVChipkaart ovChipkaart) {
         Session session = sessionFactory.openSession();
         try{
             session.beginTransaction();
-            session.delete(adres);
+            session.delete(ovChipkaart);
             session.getTransaction().commit();
             return true;
 
@@ -65,23 +62,21 @@ public class AdresDAOHibernate implements AdresDAO {
     }
 
     @Override
-    public Adres findByReiziger(Reiziger reiziger) {
+    public List<OVChipkaart> findByReiziger(Reiziger reiziger) {
         Session session = sessionFactory.openSession();
         try {
-            String hql = "FROM Adres WHERE reizigerId = :reizigerId";
-            Query<Adres> query = session.createQuery(hql, Adres.class);
-            query.setParameter("reizigerId", reiziger.getId());
-            return query.uniqueResult();
+            return session.createQuery("FROM OVChipkaart WHERE reizigerId = :reizigerId", OVChipkaart.class)
+                    .setParameter("reizigerId", reiziger.getId())
+                    .list();
         } finally {
             session.close();
         }
     }
-
     @Override
-    public List<Adres> findAll() {
+    public List<OVChipkaart> findAll() {
         Session session = sessionFactory.openSession();
         try {
-            return session.createQuery("from Adres", Adres.class).list();
+            return session.createQuery("from OVChipkaart ", OVChipkaart.class).list();
         } finally {
             session.close();
         }

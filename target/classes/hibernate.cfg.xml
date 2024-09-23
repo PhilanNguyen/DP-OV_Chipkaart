@@ -31,5 +31,7 @@
 
         <!-- List your annotated entity classes here -->
         <mapping class="nl.hu.ipass.domain.Reiziger"/>
+        <mapping class="nl.hu.ipass.domain.Adres"/>
+        <mapping class="nl.hu.ipass.domain.OVChipkaart"/>
     </session-factory>
 </hibernate-configuration>

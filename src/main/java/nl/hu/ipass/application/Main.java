@@ -1,12 +1,12 @@
 package nl.hu.ipass.application;
 
-import nl.hu.ipass.domain.Adres;
-import nl.hu.ipass.domain.AdresDAO;
-import nl.hu.ipass.domain.Reiziger;
-import nl.hu.ipass.domain.ReizigerDAO;
+import nl.hu.ipass.domain.*;
 import nl.hu.ipass.infra.dao.AdresDAOPsql;
+import nl.hu.ipass.infra.dao.OVChipkaartDAOPsql;
 import nl.hu.ipass.infra.dao.ReizigerDAOPsql;
 
+import nl.hu.ipass.infra.hibernate.AdresDAOHibernate;
+import nl.hu.ipass.infra.hibernate.OVChipkaartDAOHibernate;
 import nl.hu.ipass.infra.hibernate.ReizigerDAOHibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -26,12 +26,24 @@ public class Main {
 
         ReizigerDAOHibernate reizigerDAOHibernate = new ReizigerDAOHibernate();
 
-        AdresDAOPsql AdresDAO = new AdresDAOPsql(conn);
+        AdresDAOPsql adresDAO = new AdresDAOPsql(conn);
 
-        //testReizigerDAO(reizigerDAOHibernate);
+        AdresDAOHibernate adresDAOHibernate = new AdresDAOHibernate();
+
+        OVChipkaartDAOPsql ovChipkaartDAO = new OVChipkaartDAOPsql(conn);
+
+        OVChipkaartDAOHibernate ovChipkaartDAOHibernate = new OVChipkaartDAOHibernate();
+
+
         //testReizigerDAO(reizigerDAO);
+        //testReizigerDAO(reizigerDAOHibernate);
 
-        testAdresDAO(AdresDAO,reizigerDAO);
+        //testAdresDAO(adresDAO,reizigerDAO);
+        //testAdresDAO(adresDAOHibernate,reizigerDAOHibernate);
+
+        //testOVChipkaartDAO(ovChipkaartDAO, reizigerDAO);
+        testOVChipkaartDAO(ovChipkaartDAOHibernate, reizigerDAOHibernate);
+
         sessionFactory.close();
     }
     /**
@@ -123,5 +135,49 @@ public class Main {
         adressen = adao.findAll();
         System.out.println("Na delete heeft AdresDAO.findAll() nu " + adressen.size() + " adressen\n");
     }
+
+    private static void testOVChipkaartDAO(OVChipkaartDAO odao, ReizigerDAO rdao) throws SQLException {
+        System.out.println("\n---------- Test AdresDAO -------------");
+
+        // Haal alle ovChipkaarten op uit de database
+        List<OVChipkaart> ovChipkaarten = odao.findAll();
+        System.out.println("[Test] OVChipkaartDAO.findAll() geeft de volgende adressen:");
+        for (OVChipkaart o : ovChipkaarten) {
+            System.out.println(o);
+        }
+        System.out.println();
+
+        // Maak een nieuwe reiziger aan en persisteer deze in de database
+        int reizigerId = 78; // Zorg ervoor dat deze reiziger bestaat
+        String gbdatum = "1981-03-14";
+        Reiziger reiziger = new Reiziger(reizigerId, "S", "", "Boers", java.sql.Date.valueOf(gbdatum));
+        rdao.save(reiziger); // Voeg de reiziger toe als deze nog niet bestaat
+
+        // Maak een nieuw adres aan
+        int kaartNummer = 99999; // Zorg ervoor dat dit een uniek id is
+        String datum = "2022-03-31";
+        OVChipkaart nieuwOV = new OVChipkaart(kaartNummer, java.sql.Date.valueOf(gbdatum), 2, 35.50, reiziger.getId());
+
+        System.out.print("[Test] Eerst " + ovChipkaarten.size() + " ovchipkaarten, na OVChipkaartDAO.save() ");
+        odao.save(nieuwOV);
+        ovChipkaarten = odao.findAll();
+        System.out.println(ovChipkaarten.size() + " ovchipkaarten\n");
+
+        nieuwOV.setKlasse(1);
+        odao.update(nieuwOV);
+        System.out.println("[Test] Geüpdatet ovChipkaart: " + odao.findByReiziger(rdao.findById(78)));
+
+        // Test de findByReiziger-functionaliteit
+        System.out.print("[Test] Vind OV voor reiziger met id " + reizigerId + ".");
+        List<OVChipkaart> gevondenOVChipkaart = odao.findByReiziger(reiziger);
+        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft het volgende OVChipkaart: " + gevondenOVChipkaart);
+
+        // Test de delete-functionaliteit
+        System.out.print("[Test] Verwijder ovchipkaart met kaartnummer " + kaartNummer);
+        odao.delete(nieuwOV);
+        ovChipkaarten = odao.findAll();
+        System.out.println("Na delete heeft OVChipkaartDAO.findAll() nu " + ovChipkaarten.size() + " ovchipkaarten\n");
+    }
+
 
 }
