@@ -25,7 +25,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             pstmt.setDate(2, ovChipkaart.getGeldigTot());
             pstmt.setInt(3, ovChipkaart.getKlasse());
             pstmt.setDouble(4, ovChipkaart.getSaldo());
-            pstmt.setInt(5, ovChipkaart.getReizigerId());
+            pstmt.setInt(5, ovChipkaart.getReiziger().getId());
             int rijenInserted = pstmt.executeUpdate();
             pstmt.close();
 
@@ -39,9 +39,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
         try {
-            String query = "UPDATE ov_chipkaart SET reiziger_id = ?, geldig_tot = ?, klassse = ?, saldo = ? WHERE kaart_nummer = ?";
+            String query = "UPDATE ov_chipkaart SET reiziger_id = ?, geldig_tot = ?, klasse = ?, saldo = ? WHERE kaart_nummer = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, ovChipkaart.getReizigerId());
+            pstmt.setInt(1, ovChipkaart.getReiziger().getId());
             pstmt.setDate(2, ovChipkaart.getGeldigTot());
             pstmt.setInt(3, ovChipkaart.getKlasse());
             pstmt.setDouble(4, ovChipkaart.getSaldo());
@@ -86,7 +86,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         rs.getDate("geldig_tot"),
                         rs.getInt("klasse"),
                         rs.getDouble("saldo"),
-                        reiziger.getId()
+                        reiziger
                 );
                 ovChipkaarten.add(ovChipkaart);
             }
@@ -105,12 +105,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
+                Reiziger reiziger = new Reiziger();
                 OVChipkaart ovChipkaart = new OVChipkaart(
                         rs.getInt("kaart_nummer"),
                         rs.getDate("geldig_tot"),
                         rs.getInt("klasse"),
                         rs.getDouble("saldo"),
-                        rs.getInt("reiziger_id")
+                        reiziger
                 );
                 ovChipkaarten.add(ovChipkaart);
             }

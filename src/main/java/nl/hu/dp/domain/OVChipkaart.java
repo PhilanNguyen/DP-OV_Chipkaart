@@ -18,24 +18,25 @@ public class OVChipkaart {
     private int klasse;
     @Column(name = "saldo")
     private double saldo;
-    @Column(name = "reiziger_id")
-    private int reizigerId;
+    @ManyToOne
+    @JoinColumn(name = "reiziger_id")
+    private Reiziger reiziger;
 
-    @ManyToMany
-    @JoinTable(
-            name = "ov_chipkaart_product", // Join table name
-            joinColumns = @JoinColumn(name = "kaart_nummer"), // Foreign key in the join table
-            inverseJoinColumns = @JoinColumn(name = "product_nummer") // Foreign key for Product
-    )
-    private List<Product> producten;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "ov_chipkaart_product", // Join table name
+//            joinColumns = @JoinColumn(name = "kaart_nummer"), // Foreign key in the join table
+//            inverseJoinColumns = @JoinColumn(name = "product_nummer") // Foreign key for Product
+//    )
+//    private List<Product> producten;
 
     public OVChipkaart(){}
-    public OVChipkaart(int kaartNummer, Date geldigTot, int klasse, double saldo, int reizigerId) {
+    public OVChipkaart(int kaartNummer, Date geldigTot, int klasse, double saldo, Reiziger reiziger) {
         this.kaartNummer = kaartNummer;
         this.geldigTot = geldigTot;
         this.klasse = klasse;
         this.saldo = saldo;
-        this.reizigerId = reizigerId;
+        this.reiziger = reiziger;
     }
 
     public int getKaartNummer() {
@@ -70,12 +71,12 @@ public class OVChipkaart {
         this.saldo = saldo;
     }
 
-    public int getReizigerId() {
-        return reizigerId;
+    public Reiziger getReiziger() {
+        return reiziger;
     }
 
-    public void setReizigerId(int reizigerId) {
-        this.reizigerId = reizigerId;
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class OVChipkaart {
                 ", geldigTot=" + geldigTot +
                 ", klasse=" + klasse +
                 ", saldo=" + saldo +
-                ", reizigerId=" + reizigerId +
+                ", reiziger=" + reiziger.getNaam() +
                 '}';
     }
     public boolean addProduct(Product p){

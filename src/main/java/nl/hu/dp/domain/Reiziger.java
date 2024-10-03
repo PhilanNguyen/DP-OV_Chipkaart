@@ -1,6 +1,7 @@
     package nl.hu.dp.domain;
 
     import java.sql.Date;
+    import java.util.List;
 
     import jakarta.persistence.*;
 
@@ -26,6 +27,8 @@
 
         @OneToOne(mappedBy = "reiziger", cascade = CascadeType.ALL)
         private Adres adres;
+        @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+        private List<OVChipkaart> ovChipkaarten;
 
         // Constructors, getters en setters
 
@@ -87,6 +90,25 @@
             }
         }
 
+        public List<OVChipkaart> getOvChipkaarten() {
+            return ovChipkaarten;
+        }
+
+        public void setOvChipkaarten(List<OVChipkaart> ovChipkaarten) {
+            this.ovChipkaarten = ovChipkaarten;
+        }
+
+        public void addOvChipkaart(OVChipkaart ovChipkaart) {
+            ovChipkaarten.add(ovChipkaart);
+            ovChipkaart.setReiziger(this);  // Zorg dat de OV-chipkaart naar de juiste reiziger wijst
+        }
+
+        public void removeOvChipkaart(OVChipkaart ovChipkaart) {
+            ovChipkaarten.remove(ovChipkaart);
+            ovChipkaart.setReiziger(null);  // Ontkoppel de OV-chipkaart van de reiziger
+        }
+
+
         // toString-methode om de Reiziger als String weer te geven
         @Override
         public String toString() {
@@ -95,7 +117,8 @@
                     ", voorletters='" + voorletters + '\'' +
                     ", tussenvoegsel='" + tussenvoegsel + '\'' +
                     ", achternaam='" + achternaam + '\'' +
-                    ", geboortedatum=" + geboortedatum +
+                    ", geboortedatum=" + geboortedatum + '\'' +
+                    ", ovChipkaarten=" + ovChipkaarten +
                     '}';
         }
     }

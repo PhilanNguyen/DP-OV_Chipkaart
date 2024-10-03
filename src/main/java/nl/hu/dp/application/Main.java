@@ -37,8 +37,8 @@ public class Main {
         //testReizigerDAO(reizigerDAO);
         //testReizigerDAO(reizigerDAOHibernate);
 
-        //testAdresDAO(adresDAO,reizigerDAO);
-        testAdresDAO(adresDAOHibernate,reizigerDAOHibernate);
+        testAdresDAO(adresDAO,reizigerDAO);
+        //testAdresDAO(adresDAOHibernate,reizigerDAOHibernate);
 
         //testOVChipkaartDAO(ovChipkaartDAO, reizigerDAO);
         //testOVChipkaartDAO(ovChipkaartDAOHibernate, reizigerDAOHibernate);
@@ -118,15 +118,34 @@ public class Main {
         adao.save(nieuwAdres);
         adressen = adao.findAll();
         System.out.println(adressen.size() + " adressen\n");
+        System.out.println("[Test] AdresDAO.findAll() geeft de volgende adressen:");
+        for (Adres a : adressen) {
+            System.out.println(a);
+        }
+        System.out.println();
 
         nieuwAdres.setStraat("BijgewerkteStraat");
         adao.update(nieuwAdres);
         System.out.println("[Test] Geüpdatet adres: " + adao.findByReiziger(rdao.findById(78)));
+        System.out.println();
 
-        // Test de findByReiziger-functionaliteit
-        System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + ".");
-        Adres gevondenAdres = adao.findByReiziger(reiziger);
-        System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres);
+//        // Test de findByReiziger-functionaliteit
+//        System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
+//        Adres gevondenAdres = adao.findByReiziger(reiziger);
+//        System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres);
+//
+
+
+        //TEST de delete als reiziger wordt gedelete en adres dan ook wordt gedelete
+        System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
+        Adres gevondenAdres2 = adao.findByReiziger(reiziger);
+        System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres2);
+        System.out.print("[Test] Verwijder reiziger met id " + reizigerId + "\n");
+        rdao.delete(rdao.findById(reizigerId));
+        System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
+        Adres gevondenAdres3 = adao.findByReiziger(reiziger);
+        System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres3);
+        System.out.println();
 
         // Test de delete-functionaliteit
         System.out.print("[Test] Verwijder adres met id " + adresId + "\n");
@@ -134,13 +153,6 @@ public class Main {
         adressen = adao.findAll();
         System.out.println("Na delete heeft AdresDAO.findAll() nu " + adressen.size() + " adressen\n");
 
-
-        //TEST de delete als reiziger wordt gedelete en adres dan ook wordt gedelete
-        System.out.print("[Test] Verwijder reiziger met id " + reizigerId + "\n");
-        rdao.delete(rdao.findById(reizigerId));
-        System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
-        Adres gevondenAdres2 = adao.findByReiziger(reiziger);
-        System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres2);
     }
 
     private static void testOVChipkaartDAO(OVChipkaartDAO odao, ReizigerDAO rdao) throws SQLException {
@@ -163,12 +175,18 @@ public class Main {
         // Maak een nieuw adres aan
         int kaartNummer = 99999; // Zorg ervoor dat dit een uniek id is
         String datum = "2022-03-31";
-        OVChipkaart nieuwOV = new OVChipkaart(kaartNummer, java.sql.Date.valueOf(gbdatum), 2, 35.50, reiziger.getId());
+        OVChipkaart nieuwOV = new OVChipkaart(kaartNummer, java.sql.Date.valueOf(gbdatum), 2, 35.50, reiziger);
 
         System.out.print("[Test] Eerst " + ovChipkaarten.size() + " ovchipkaarten, na OVChipkaartDAO.save() ");
         odao.save(nieuwOV);
         ovChipkaarten = odao.findAll();
         System.out.println(ovChipkaarten.size() + " ovchipkaarten\n");
+
+        System.out.println("[Test] OVChipkaartDAO.findAll() geeft de volgende adressen:");
+        for (OVChipkaart o : ovChipkaarten) {
+            System.out.println(o);
+        }
+        System.out.println();
 
         nieuwOV.setKlasse(1);
         odao.update(nieuwOV);
@@ -184,7 +202,18 @@ public class Main {
         odao.delete(nieuwOV);
         ovChipkaarten = odao.findAll();
         System.out.println("Na delete heeft OVChipkaartDAO.findAll() nu " + ovChipkaarten.size() + " ovchipkaarten\n");
-    }
 
+        //TEST de delete als reiziger wordt gedelete en alle ovchipkaarten dan ook wordt gedelete
+        System.out.print("[Test] Vind alle kaarten voor reiziger met id " + reizigerId + "\n");
+        List<OVChipkaart> gevondenOVChipkaarten = odao.findByReiziger(reiziger);
+        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft het volgende adres: " + gevondenOVChipkaarten);
+
+        System.out.print("[Test] Verwijder reiziger met id " + reizigerId + "\n");
+        rdao.delete(rdao.findById(reizigerId));
+        System.out.print("[Test] Vind alle kaarten voor reiziger met id " + reizigerId + "\n");
+        List<OVChipkaart> gevondenOVChipkaarten2 = odao.findByReiziger(reiziger);
+        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft het volgende adres: " + gevondenOVChipkaarten2);
+
+    }
 
 }

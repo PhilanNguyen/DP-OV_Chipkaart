@@ -22,8 +22,8 @@ public class Product {
     @Column(name = "prijs")
     private double prijs;
 
-    @ManyToMany(mappedBy = "producten")
-    private List<OVChipkaart> ovChipkaarten;
+//    @ManyToMany(mappedBy = "producten")
+//    private List<OVChipkaart> ovChipkaarten;
     public Product() {}
 
 
@@ -66,13 +66,13 @@ public class Product {
         this.prijs = prijs;
     }
 
-    public List<OVChipkaart> getOVChipkaarten() {
-        return ovChipkaarten;
-    }
-
-    public void setOVChipkaarten(List<OVChipkaart> ovChipkaarten) {
-        this.ovChipkaarten = ovChipkaarten;
-    }
+//    public List<OVChipkaart> getOVChipkaarten() {
+//        return ovChipkaarten;
+//    }
+//
+//    public void setOVChipkaarten(List<OVChipkaart> ovChipkaarten) {
+//        this.ovChipkaarten = ovChipkaarten;
+//    }
 
     @Override
     public String toString() {
