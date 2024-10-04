@@ -22,13 +22,13 @@ public class OVChipkaart {
     @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "ov_chipkaart_product", // Join table name
-//            joinColumns = @JoinColumn(name = "kaart_nummer"), // Foreign key in the join table
-//            inverseJoinColumns = @JoinColumn(name = "product_nummer") // Foreign key for Product
-//    )
-//    private List<Product> producten;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "ov_chipkaart_product", // Join table name
+            joinColumns = @JoinColumn(name = "kaart_nummer"), // Foreign key in the join table
+            inverseJoinColumns = @JoinColumn(name = "product_nummer") // Foreign key for Product
+    )
+    private List<Product> producten = new ArrayList<>();
 
     public OVChipkaart(){}
     public OVChipkaart(int kaartNummer, Date geldigTot, int klasse, double saldo, Reiziger reiziger) {
@@ -79,6 +79,27 @@ public class OVChipkaart {
         this.reiziger = reiziger;
     }
 
+    public boolean addProduct(Product p) {
+        if (producten == null) {
+            producten = new ArrayList<>();
+        }
+        if (!producten.contains(p)) {
+            producten.add(p);
+            p.addOVChipkaart(this);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeProduct(Product p) {
+        if (producten != null && producten.contains(p)) {
+            producten.remove(p);
+            p.removeOVChipkaart(this); // Ensure bidirectional relationship
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "OVChipkaart{" +
@@ -88,13 +109,6 @@ public class OVChipkaart {
                 ", saldo=" + saldo +
                 ", reiziger=" + reiziger.getNaam() +
                 '}';
-    }
-    public boolean addProduct(Product p){
-        return false;
-    }
-
-    public boolean removeProduct(Product p){
-        return false;
     }
 
 }

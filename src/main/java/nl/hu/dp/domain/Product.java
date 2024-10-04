@@ -22,8 +22,8 @@ public class Product {
     @Column(name = "prijs")
     private double prijs;
 
-//    @ManyToMany(mappedBy = "producten")
-//    private List<OVChipkaart> ovChipkaarten;
+    @ManyToMany(mappedBy = "producten", cascade = CascadeType.ALL)
+    private List<OVChipkaart> ovChipkaarten;
     public Product() {}
 
 
@@ -66,30 +66,43 @@ public class Product {
         this.prijs = prijs;
     }
 
-//    public List<OVChipkaart> getOVChipkaarten() {
-//        return ovChipkaarten;
-//    }
-//
-//    public void setOVChipkaarten(List<OVChipkaart> ovChipkaarten) {
-//        this.ovChipkaarten = ovChipkaarten;
-//    }
+    public List<OVChipkaart> getOVChipkaarten() {
+        return ovChipkaarten;
+    }
+
+    public void setOVChipkaarten(List<OVChipkaart> ovChipkaarten) {
+        this.ovChipkaarten = ovChipkaarten;
+    }
+
+    public boolean addOVChipkaart(OVChipkaart k) {
+        if (ovChipkaarten == null) {
+            ovChipkaarten = new ArrayList<>();
+        }
+        if (!ovChipkaarten.contains(k)) {
+            ovChipkaarten.add(k);
+            k.addProduct(this); // Ensure bidirectional relationship
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeOVChipkaart(OVChipkaart k) {
+        if (ovChipkaarten != null && ovChipkaarten.contains(k)) {
+            ovChipkaarten.remove(k);
+            k.removeProduct(this); // Ensure bidirectional relationship
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public String toString() {
-        return "OVChipkaart{" +
+        return "Product{" +
                 "productNummer=" + productNummer +
-                ", naam=" + naam +
-                ", beschrijving=" + beschrijving +
+                ", naam='" + naam + '\'' +
+                ", beschrijving='" + beschrijving + '\'' +
                 ", prijs=" + prijs +
                 '}';
-    }
-
-    public boolean addOVChipkaart(OVChipkaart k){
-        return false;
-    }
-
-    public boolean removeOVChipkaart(OVChipkaart k){
-        return false;
     }
 
 }

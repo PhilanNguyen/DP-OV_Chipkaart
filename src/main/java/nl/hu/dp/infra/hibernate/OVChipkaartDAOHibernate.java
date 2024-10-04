@@ -10,17 +10,19 @@ import java.util.List;
 public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
 
     private SessionFactory sessionFactory;
-    public OVChipkaartDAOHibernate() {
+    private Session session;
+    public OVChipkaartDAOHibernate(Session session) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        this.session = session;
     }
 
     @Override
     public boolean save(OVChipkaart ovChipkaart) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
+//            session.beginTransaction();
             session.persist(ovChipkaart);
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -32,11 +34,11 @@ public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
 
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
+//            session.beginTransaction();
             session.update(ovChipkaart);
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -48,11 +50,11 @@ public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
 
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
+//            session.beginTransaction();
             session.delete(ovChipkaart);
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -64,22 +66,25 @@ public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
 
     @Override
     public List<OVChipkaart> findByReiziger(Reiziger reiziger) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try {
             return session.createQuery("FROM OVChipkaart WHERE reiziger.id = :reizigerId", OVChipkaart.class)
                     .setParameter("reizigerId", reiziger.getId())
                     .list();
-        } finally {
-            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
+
     @Override
     public List<OVChipkaart> findAll() {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try {
             return session.createQuery("from OVChipkaart ", OVChipkaart.class).list();
-        } finally {
-            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 }

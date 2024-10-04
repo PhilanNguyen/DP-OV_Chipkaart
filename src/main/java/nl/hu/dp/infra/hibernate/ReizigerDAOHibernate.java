@@ -11,17 +11,19 @@ import java.util.List;
 
 public class ReizigerDAOHibernate implements ReizigerDAO {
     private SessionFactory sessionFactory;
-    public ReizigerDAOHibernate() {
+    private Session session;
+    public ReizigerDAOHibernate(Session session) {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        this.session = session;
     }
 
     @Override
     public boolean save(Reiziger reiziger) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
-            session.persist(reiziger);
-            session.getTransaction().commit();
+//            session.beginTransaction();
+            session.merge(reiziger);
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -32,11 +34,11 @@ public class ReizigerDAOHibernate implements ReizigerDAO {
 
     @Override
     public boolean update(Reiziger reiziger) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
+//            session.beginTransaction();
             session.update(reiziger);
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -47,11 +49,11 @@ public class ReizigerDAOHibernate implements ReizigerDAO {
 
     @Override
     public boolean delete(Reiziger reiziger) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try{
-            session.beginTransaction();
+//            session.beginTransaction();
             session.delete(reiziger);
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
             return true;
 
         }catch(Exception e){
@@ -62,33 +64,36 @@ public class ReizigerDAOHibernate implements ReizigerDAO {
 
     @Override
     public Reiziger findById(int id) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try {
             return session.get(Reiziger.class, id);
-        } finally {
-            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     @Override
     public List<Reiziger> findByGbdatum(Date date) {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try {
             return session.createQuery("from Reiziger where geboortedatum = :date", Reiziger.class)
                     .setParameter("date", date)
                     .list();
-        } finally {
-            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     @Override
     public List<Reiziger> findAll() {
-        Session session = sessionFactory.openSession();
+//        Session session = sessionFactory.openSession();
         try {
             return session.createQuery("from Reiziger", Reiziger.class).list();
-        } finally {
-            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 }

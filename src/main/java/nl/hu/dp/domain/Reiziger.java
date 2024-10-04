@@ -1,6 +1,7 @@
     package nl.hu.dp.domain;
 
     import java.sql.Date;
+    import java.util.ArrayList;
     import java.util.List;
 
     import jakarta.persistence.*;
@@ -9,7 +10,7 @@
     @Table(name = "reiziger")
     public class Reiziger {
         @Id
-        //@GeneratedValue
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "reiziger_id")
         private int id;
 
@@ -28,7 +29,7 @@
         @OneToOne(mappedBy = "reiziger", cascade = CascadeType.ALL)
         private Adres adres;
         @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-        private List<OVChipkaart> ovChipkaarten;
+        private List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
         // Constructors, getters en setters
 
