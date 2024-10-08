@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="ovchipkaartPU" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- JDBC configuratie -->
+        <properties>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ovchipkaart"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="ikhouvansql"/>
+
+            <property name="eclipselink.ddl-generation" value="update"/> <!-- Opties: none, create-tables, drop-and-create-tables, update -->
+            <property name="eclipselink.logging.level" value="FINE"/> <!-- Logniveau (INFO, FINE, SEVERE) -->
+            <property name="eclipselink.logging.parameters" value="true"/> <!-- Zorgt ervoor dat SQL parameters worden weergegeven -->
+            <property name="eclipselink.weaving" value="false"/> <!-- Weaving uitschakelen, tenzij je JAR enhancement gebruikt -->
+
+        </properties>
+    </persistence-unit>
+
+</persistence>

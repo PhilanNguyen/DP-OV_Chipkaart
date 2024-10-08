@@ -29,6 +29,14 @@
             <version>42.7.4</version> <!-- Zorg ervoor dat je de juiste versie gebruikt -->
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
+
+
     </dependencies>
 
 </project>
