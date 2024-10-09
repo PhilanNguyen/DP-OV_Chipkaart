@@ -10,7 +10,7 @@
     @Table(name = "reiziger")
     public class Reiziger {
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        //@GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "reiziger_id")
         private int id;
 

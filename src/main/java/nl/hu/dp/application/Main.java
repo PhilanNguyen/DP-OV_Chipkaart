@@ -1,15 +1,22 @@
 package nl.hu.dp.application;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import nl.hu.dp.domain.*;
 import nl.hu.dp.infra.dao.AdresDAOPsql;
 import nl.hu.dp.infra.dao.OVChipkaartDAOPsql;
 import nl.hu.dp.infra.dao.ProductDAOPsql;
 import nl.hu.dp.infra.dao.ReizigerDAOPsql;
 
+import nl.hu.dp.infra.eclipse.*;
 import nl.hu.dp.infra.hibernate.AdresDAOHibernate;
 import nl.hu.dp.infra.hibernate.OVChipkaartDAOHibernate;
 import nl.hu.dp.infra.hibernate.ProductDAOHibernate;
 import nl.hu.dp.infra.hibernate.ReizigerDAOHibernate;
+
+import nl.hu.dp.infra.eclipse.OVChipkaartDAOEclipse;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -30,6 +37,11 @@ public class Main {
 
         session.beginTransaction();
 
+
+
+
+
+
         ReizigerDAOPsql reizigerDAO = new ReizigerDAOPsql(conn);
 
         ReizigerDAOHibernate reizigerDAOHibernate = new ReizigerDAOHibernate(session);
@@ -46,6 +58,46 @@ public class Main {
 
         ProductDAOHibernate productDAOHibernate = new ProductDAOHibernate(session);
 
+
+
+        //eclipse
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ovchipkaartPU");
+        EntityManager em = emf.createEntityManager();
+
+
+        em.getTransaction().begin();
+
+        //AdresDAOJPA adresDAOJPA = new AdresDAOEclipse(em);
+
+        OVChipkaartDAOEclipse ovChipkaartDAOEclipse = new OVChipkaartDAOEclipse(em);
+
+        ProductDAOEclipse productDAOEclipse = new ProductDAOEclipse(em);
+
+        ReizigerDAOEclipse reizigerDAOEclipse = new ReizigerDAOEclipse(em);
+
+        AdresDAOEclipse adresDAOEclipse = new AdresDAOEclipse(em);
+
+        // Test je DAOs
+        //testProductDAO(productDAO, ovChipkaartDAO, reizigerDAO);
+
+        //testReizigerDAO(reizigerDAOEclipse);
+//        testAdresDAO(adresDAOEclipse, reizigerDAOEclipse);
+        testOVChipkaartDAO(ovChipkaartDAOEclipse, reizigerDAOEclipse);
+        //testProductDAO(productDAOEclipse, ovChipkaartDAOEclipse, reizigerDAOEclipse);
+
+
+
+
+
+        em.getTransaction().commit();
+
+        em.close();
+        emf.close();
+        //
+
+
+
+
         //testReizigerDAO(reizigerDAO);
         //testReizigerDAO(reizigerDAOHibernate);
 
@@ -55,7 +107,7 @@ public class Main {
         //testOVChipkaartDAO(ovChipkaartDAO, reizigerDAO);
         //testOVChipkaartDAO(ovChipkaartDAOHibernate, reizigerDAOHibernate);
 
-        testProductDAO(productDAO, ovChipkaartDAO, reizigerDAO);
+        //testProductDAO(productDAO, ovChipkaartDAO, reizigerDAO);
         //testProductDAO(productDAOHibernate, ovChipkaartDAOHibernate, reizigerDAOHibernate);
 
 
@@ -159,6 +211,13 @@ public class Main {
         System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
         Adres gevondenAdres2 = adao.findByReiziger(reiziger);
         System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres2);
+
+
+
+        // Test de delete-functionaliteit
+        System.out.print("[Test] Verwijder adres met id " + adresId + "\n");
+        adao.delete(nieuwAdres);
+
         System.out.print("[Test] Verwijder reiziger met id " + reizigerId + "\n");
         rdao.delete(rdao.findById(reizigerId));
         System.out.print("[Test] Vind adres voor reiziger met id " + reizigerId + "\n");
@@ -166,9 +225,6 @@ public class Main {
         System.out.println("[Test] AdresDAO.findByReiziger() geeft het volgende adres: " + gevondenAdres3);
         System.out.println();
 
-        // Test de delete-functionaliteit
-        System.out.print("[Test] Verwijder adres met id " + adresId + "\n");
-        adao.delete(nieuwAdres);
         adressen = adao.findAll();
         System.out.println("Na delete heeft AdresDAO.findAll() nu " + adressen.size() + " adressen\n");
 
@@ -189,12 +245,21 @@ public class Main {
         int reizigerId = 78; // Zorg ervoor dat deze reiziger bestaat
         String gbdatum = "1981-03-14";
         Reiziger reiziger = new Reiziger(reizigerId, "S", "", "Boers", java.sql.Date.valueOf(gbdatum));
+//
+//        Reiziger bestaandeReiziger = rdao.findById(reizigerId);
+//        if (bestaandeReiziger !=null) {
+//            rdao.delete(rdao.findById(reizigerId));
+//        }
         rdao.save(reiziger); // Voeg de reiziger toe als deze nog niet bestaat
 
         // Maak een nieuw adres aan
         int kaartNummer = 99999; // Zorg ervoor dat dit een uniek id is
         String datum = "2022-03-31";
         OVChipkaart nieuwOV = new OVChipkaart(kaartNummer, java.sql.Date.valueOf(gbdatum), 2, 35.50, reiziger);
+
+//        if (ovChipkaarten.contains(nieuwOV)) {
+//            odao.delete(nieuwOV);
+//        }
 
         System.out.print("[Test] Eerst " + ovChipkaarten.size() + " ovchipkaarten, na OVChipkaartDAO.save() ");
         odao.save(nieuwOV);
@@ -225,13 +290,13 @@ public class Main {
         //TEST de delete als reiziger wordt gedelete en alle ovchipkaarten dan ook wordt gedelete
         System.out.print("[Test] Vind alle kaarten voor reiziger met id " + reizigerId + "\n");
         List<OVChipkaart> gevondenOVChipkaarten = odao.findByReiziger(reiziger);
-        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft het volgende adres: " + gevondenOVChipkaarten);
+        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft de volgende ovchipkaarten: " + gevondenOVChipkaarten);
 
         System.out.print("[Test] Verwijder reiziger met id " + reizigerId + "\n");
         rdao.delete(rdao.findById(reizigerId));
         System.out.print("[Test] Vind alle kaarten voor reiziger met id " + reizigerId + "\n");
         List<OVChipkaart> gevondenOVChipkaarten2 = odao.findByReiziger(reiziger);
-        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft het volgende adres: " + gevondenOVChipkaarten2);
+        System.out.println("[Test] OVChipkaartDAO.findByReiziger() geeft de volgende ovchipkaarten: " + gevondenOVChipkaarten2);
 
     }
 
@@ -250,14 +315,19 @@ public class Main {
         int kaartNummer = 98765; // Zorg ervoor dat dit een uniek id is
         String geldigTot = "2025-12-31";
 
+
         Reiziger reiziger = new Reiziger(12, "J", "de", "Vries", java.sql.Date.valueOf("1980-01-01"));
         rdao.save(reiziger);
 
         OVChipkaart nieuwOV = new OVChipkaart(kaartNummer, java.sql.Date.valueOf(geldigTot), 2, 50.00, reiziger);
+
         odao.save(nieuwOV);
 
         int productNummer = 7; // Zorg ervoor dat dit een uniek id is
         Product nieuwProduct = new Product(productNummer, "NS Flex", "Reis op rekening met korting", 5.00);
+
+//        odao.delete(nieuwOV);
+//        pdao.delete(nieuwProduct);
 
         System.out.print("[Test] Eerst " + producten.size() + " producten, na ProductDAO.save() ");
         pdao.save(nieuwProduct);
@@ -311,6 +381,8 @@ public class Main {
         System.out.println("Na OVChipkaart delete heeft ProductDAO.findByOVChipkaart() nu " + productenVoorOVChipkaart.size() + " producten geassocieerd met de OVChipkaart.");
 
 //        session.getTransaction().commit();
+
+        rdao.delete(reiziger);
 
     }
 
